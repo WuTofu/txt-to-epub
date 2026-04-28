@@ -11,6 +11,7 @@ export interface Chapter {
   title: string;
   lines: string[];
   isIntro?: boolean;
+  originalTitle?: string;
 }
 
 export interface ReadResult {

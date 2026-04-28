@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, reactive, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
 import BookMetaForm from "./components/BookMetaForm.vue";
 import ChapterDetail from "./components/ChapterDetail.vue";
 import ChapterList from "./components/ChapterList.vue";
 import CoverUploadPanel from "./components/CoverUploadPanel.vue";
+import CustomRulesPanel from "./components/CustomRulesPanel.vue";
 import ExportPanel from "./components/ExportPanel.vue";
 import FileUploadPanel from "./components/FileUploadPanel.vue";
 import { mergeWithPrevious, renameChapter } from "./core/chapterOps";
 import { parseChapters } from "./core/chapterParser";
+import {
+  loadRules,
+  saveRules,
+  type ChapterRule,
+} from "./core/customRules";
 import { preprocessLines } from "./core/preprocess";
 import { buildEpub } from "./core/epubBuilder";
 import { readTextFile } from "./core/textReader";
@@ -16,6 +22,7 @@ import type { BookMeta, Chapter, Cover } from "./types";
 const detectedEncoding = ref("未知");
 const usedEncoding = ref("待解析");
 const chapters = ref<Chapter[]>([]);
+const rawLines = ref<string[]>([]);
 const selectedChapterId = ref<string | null>(null);
 const statusMessage = ref("");
 const errorMessage = ref("");
@@ -23,6 +30,7 @@ const busy = ref(false);
 const lastFileName = ref("");
 const cover = ref<Cover | null>(null);
 const coverPreviewUrl = ref<string | null>(null);
+const customRules = ref<ChapterRule[]>([]);
 
 const bookMeta = reactive<BookMeta>({
   title: "",
@@ -78,8 +86,9 @@ async function handleParse(payload: { file: File; encoding: string | "auto" }) {
     usedEncoding.value = read.usedEncoding || "utf-8";
 
     const lines = preprocessLines(read.text);
-    const parsed = parseChapters(lines, bookMeta.language);
+    const parsed = parseChapters(lines, bookMeta.language, customRules.value);
 
+    rawLines.value = lines;
     chapters.value = parsed;
     selectedChapterId.value = parsed[0]?.id ?? null;
     lastFileName.value = payload.file.name.replace(/\.txt$/i, "") || payload.file.name;
@@ -135,6 +144,43 @@ async function handleExport() {
   } finally {
     busy.value = false;
   }
+}
+
+onMounted(() => {
+  customRules.value = loadRules();
+});
+
+watch(
+  customRules,
+  (next) => {
+    saveRules(next);
+  },
+  { deep: true },
+);
+
+function handleReparse() {
+  if (!rawLines.value.length) return;
+  const dirty = chapters.value.some(
+    (ch) => ch.originalTitle !== undefined && ch.title !== ch.originalTitle,
+  );
+  if (dirty) {
+    const ok = window.confirm(
+      "重新解析会丢弃已修改的章节标题与合并结果，继续？",
+    );
+    if (!ok) return;
+  }
+  const parsed = parseChapters(
+    rawLines.value,
+    bookMeta.language,
+    customRules.value,
+  );
+  chapters.value = parsed;
+  selectedChapterId.value = parsed[0]?.id ?? null;
+  statusMessage.value = `已按当前规则重新解析，共 ${parsed.length} 个章节`;
+}
+
+function handleRulesUpdate(next: ChapterRule[]) {
+  customRules.value = next;
 }
 
 onBeforeUnmount(() => {
@@ -198,6 +244,13 @@ onBeforeUnmount(() => {
           :busy="busy"
           @rename="handleRename"
           @merge-prev="handleMergePrev"
+        />
+        <CustomRulesPanel
+          :rules="customRules"
+          :raw-lines="rawLines"
+          :has-file="rawLines.length > 0"
+          @update:rules="handleRulesUpdate"
+          @reparse="handleReparse"
         />
         <ExportPanel :chapter-count="chapters.length" :word-count="totalWords" :busy="busy" @export="handleExport" />
         <div class="card" v-if="statusMessage || errorMessage">
