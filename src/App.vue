@@ -78,7 +78,7 @@ function handleCoverClear() {
 
 async function handleParse(payload: { file: File; encoding: string | "auto" }) {
   busy.value = true;
-  statusMessage.value = "读取文件中…";
+  statusMessage.value = "讀取檔案中…";
   errorMessage.value = "";
   try {
     const read = await readTextFile(payload.file, payload.encoding);
@@ -95,7 +95,7 @@ async function handleParse(payload: { file: File; encoding: string | "auto" }) {
     if (!bookMeta.title) {
       bookMeta.title = lastFileName.value;
     }
-    statusMessage.value = `已解析 ${parsed.length} 个章节`;
+    statusMessage.value = `已解析 ${parsed.length} 個章節`;
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : String(error);
   } finally {
@@ -108,7 +108,7 @@ function handleSelectChapter(id: string) {
 }
 
 function handleRename(payload: { id: string; title: string }) {
-  chapters.value = renameChapter(chapters.value, payload.id, payload.title || "未命名章节");
+  chapters.value = renameChapter(chapters.value, payload.id, payload.title || "未命名章節");
 }
 
 function handleMergePrev(id: string) {
@@ -117,11 +117,11 @@ function handleMergePrev(id: string) {
 
 async function handleExport() {
   if (!chapters.value.length) {
-    errorMessage.value = "请先解析并确认章节";
+    errorMessage.value = "請先解析並確認章節";
     return;
   }
   busy.value = true;
-  statusMessage.value = "生成 EPUB 中…";
+  statusMessage.value = "產生 EPUB 中…";
   errorMessage.value = "";
 
   try {
@@ -138,7 +138,7 @@ async function handleExport() {
     link.download = `${meta.title || "book"}.epub`;
     link.click();
     URL.revokeObjectURL(url);
-    statusMessage.value = "已生成 EPUB，可在本地阅读器打开验证。";
+    statusMessage.value = "已產生 EPUB，可在本機閱讀器開啟驗證。";
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : String(error);
   } finally {
@@ -165,7 +165,7 @@ function handleReparse() {
   );
   if (dirty) {
     const ok = window.confirm(
-      "重新解析会丢弃已修改的章节标题与合并结果，继续？",
+      "重新解析會捨棄已修改的章節標題與合併結果，繼續？",
     );
     if (!ok) return;
   }
@@ -176,7 +176,7 @@ function handleReparse() {
   );
   chapters.value = parsed;
   selectedChapterId.value = parsed[0]?.id ?? null;
-  statusMessage.value = `已按当前规则重新解析，共 ${parsed.length} 个章节`;
+  statusMessage.value = `已按目前規則重新解析，共 ${parsed.length} 個章節`;
 }
 
 function handleRulesUpdate(next: ChapterRule[]) {
@@ -194,7 +194,7 @@ onBeforeUnmount(() => {
   <main class="page grid" style="gap: 20px">
     <header class="flex-between" style="align-items: baseline">
       <div>
-        <h1 style="margin: 0; font-size: 28px; letter-spacing: 0.5px">TXT 转 EPUB</h1>
+        <h1 style="margin: 0; font-size: 28px; letter-spacing: 0.5px">TXT 轉 EPUB</h1>
       </div>
       <div class="flex" style="flex-wrap: wrap; justify-content: flex-end">
         <a

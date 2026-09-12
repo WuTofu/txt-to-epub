@@ -25,14 +25,14 @@ async function handleFileChange(event: Event) {
   error.value = "";
 
   if (file.size > maxSize) {
-    error.value = "图片过大，请选择不超过 5MB 的文件";
+    error.value = "圖片過大，請選擇不超過 5MB 的檔案";
     input.value = "";
     return;
   }
 
   const mimeType = file.type || "image/jpeg";
   if (!allowedTypes.includes(mimeType)) {
-    error.value = "仅支持 JPG 或 PNG 图片";
+    error.value = "僅支援 JPG 或 PNG 圖片";
     input.value = "";
     return;
   }
@@ -64,23 +64,23 @@ function handleClear() {
 <template>
   <div class="card">
     <div class="flex-between" style="align-items: center">
-      <h3 class="section-title">封面图片（可选）</h3>
+      <h3 class="section-title">封面圖片（選填）</h3>
       <button v-if="previewUrl || fileName" class="ghost-btn" type="button" :disabled="busy" @click="handleClear">
         清除封面
       </button>
     </div>
     <div class="grid" style="gap: 12px">
       <div class="muted">
-        <div>支持 JPG / PNG，建议尺寸 1400x2100 左右，大小 &lt; 5MB。</div>
-        <div>当前封面：<strong>{{ fileName || "未选择" }}</strong></div>
+        <div>支援 JPG / PNG，建議尺寸 1400x2100 左右，大小 &lt; 5MB。</div>
+        <div>目前封面：<strong>{{ fileName || "未選擇" }}</strong></div>
       </div>
       <div class="flex" style="gap: 12px; align-items: center; flex-wrap: wrap">
         <input class="input" type="file" accept="image/jpeg,image/png" :disabled="busy" @change="handleFileChange" />
         <div v-if="previewUrl" style="display: flex; align-items: center; gap: 8px">
-          <div class="muted">预览：</div>
+          <div class="muted">預覽：</div>
           <img
             :src="previewUrl"
-            alt="封面预览"
+            alt="封面預覽"
             style="height: 120px; width: auto; border-radius: 4px; box-shadow: 0 0 0 1px #e5e7eb;"
           />
         </div>

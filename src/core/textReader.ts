@@ -37,7 +37,7 @@ function stripBom(text: string): string {
 
 function bufferToLatin1String(buffer: Uint8Array): string {
   try {
-    // latin1/iso-8859-1 可以逐字节等值映射，适合做编码探测输入
+    // latin1/iso-8859-1 maps bytes 1:1, which suits it as encoding-detection input
     return new TextDecoder("latin1").decode(buffer);
   } catch {
     let result = "";

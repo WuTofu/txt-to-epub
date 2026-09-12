@@ -100,7 +100,7 @@ function requestReparse() {
   if (isDraftOpen.value) {
     const v = validateRule(draft.value);
     if (!v.ok) {
-      window.alert(`当前编辑中的规则尚未通过校验：${v.error}\n请先修正或取消。`);
+      window.alert(`目前編輯中的規則尚未通過驗證：${v.error}\n請先修正或取消。`);
       return;
     }
     saveDraft();
@@ -116,7 +116,7 @@ function toggleEnabled(id: string) {
 }
 
 function removeRule(id: string) {
-  if (!window.confirm("确认删除此规则？")) return;
+  if (!window.confirm("確認刪除此規則？")) return;
   emit(
     "update:rules",
     props.rules.filter((r) => r.id !== id),
@@ -158,7 +158,7 @@ async function handleImport(event: Event) {
     const text = await file.text();
     const imported = parseImportedRules(text);
     if (!imported.length) {
-      window.alert("未找到可用的规则");
+      window.alert("找不到可用的規則");
       return;
     }
     const existingNames = new Set(props.rules.map((r) => r.name));
@@ -166,7 +166,7 @@ async function handleImport(event: Event) {
     let merged: ChapterRule[];
     if (dupes.length > 0) {
       const replace = window.confirm(
-        `检测到 ${dupes.length} 条同名规则。\n确定 = 用导入的规则替换全部；\n取消 = 保留现有规则并追加导入的。`,
+        `偵測到 ${dupes.length} 條同名規則。\n確定 = 用匯入的規則取代全部；\n取消 = 保留現有規則並附加匯入的。`,
       );
       merged = replace ? imported : [...props.rules, ...imported];
     } else {
@@ -175,7 +175,7 @@ async function handleImport(event: Event) {
     emit("update:rules", merged);
   } catch (err) {
     window.alert(
-      "导入失败：" + (err instanceof Error ? err.message : String(err)),
+      "匯入失敗：" + (err instanceof Error ? err.message : String(err)),
     );
   } finally {
     target.value = "";
@@ -200,19 +200,19 @@ function updateCapture(e: Event) {
   <div class="card">
     <div class="flex-between">
       <h3 class="section-title" style="margin: 0">
-        自定义章节规则
+        自訂章節規則
         <span class="muted" style="font-weight: 400; margin-left: 8px">
-          {{ rules.length }} 条 · {{ enabledCount }} 启用
+          {{ rules.length }} 條 · {{ enabledCount }} 啟用
         </span>
       </h3>
       <button type="button" class="ghost-btn" @click="expanded = !expanded">
-        {{ expanded ? "收起" : "展开" }}
+        {{ expanded ? "收合" : "展開" }}
       </button>
     </div>
 
     <div v-if="expanded" class="grid" style="gap: 12px; margin-top: 12px">
       <div v-if="!rules.length" class="hint">
-        还没有自定义规则。点击下方「+ 新增规则」可以用正则或关键词补充预置的章节识别（序章 / 楔子 / 后记 等）。
+        還沒有自訂規則。點擊下方「+ 新增規則」可以用正則或關鍵字補充預設的章節識別（序章 / 楔子 / 後記 等）。
       </div>
 
       <ul v-else class="list grid" style="gap: 6px">
@@ -244,14 +244,14 @@ function updateCapture(e: Event) {
                 type="checkbox"
                 :checked="rule.enabled"
                 @change="toggleEnabled(rule.id)"
-                aria-label="启用"
+                aria-label="啟用"
               />
               <span style="font-weight: 600">{{ rule.name || "未命名" }}</span>
-              <span class="pill">{{ rule.mode === "regex" ? "正则" : "关键词" }}</span>
+              <span class="pill">{{ rule.mode === "regex" ? "正則" : "關鍵字" }}</span>
             </div>
             <div class="flex" style="gap: 6px">
-              <button type="button" class="ghost-btn" @click="startEdit(rule)">编辑</button>
-              <button type="button" class="ghost-btn" @click="removeRule(rule.id)">删除</button>
+              <button type="button" class="ghost-btn" @click="startEdit(rule)">編輯</button>
+              <button type="button" class="ghost-btn" @click="removeRule(rule.id)">刪除</button>
             </div>
           </div>
           <div
@@ -266,37 +266,37 @@ function updateCapture(e: Event) {
       <div v-if="isDraftOpen" class="hint" style="padding: 14px">
         <div class="grid" style="gap: 10px">
           <label class="muted">
-            名称
+            名稱
             <input
               class="input"
               type="text"
               v-model="draft.name"
-              placeholder="如：序章 / 后记"
+              placeholder="如：序章 / 後記"
             />
           </label>
           <div class="muted">
             模式
             <div class="flex" style="gap: 14px; margin-top: 4px">
               <label style="display: inline-flex; gap: 4px; align-items: center; cursor: pointer">
-                <input type="radio" value="keyword" v-model="draft.mode" />关键词
+                <input type="radio" value="keyword" v-model="draft.mode" />關鍵字
               </label>
               <label style="display: inline-flex; gap: 4px; align-items: center; cursor: pointer">
-                <input type="radio" value="regex" v-model="draft.mode" />正则
+                <input type="radio" value="regex" v-model="draft.mode" />正則
               </label>
             </div>
           </div>
           <label v-if="draft.mode === 'keyword'" class="muted">
-            关键词（用 <code>|</code> 或换行分隔）
+            關鍵字（用 <code>|</code> 或換行分隔）
             <textarea
               class="textarea"
               v-model="draft.pattern"
               rows="3"
-              placeholder="序|楔子&#10;后记"
+              placeholder="序|楔子&#10;後記"
               style="min-height: 80px; font-family: monospace"
             />
           </label>
           <label v-else class="muted">
-            正则表达式
+            正則表達式
             <input
               class="input"
               type="text"
@@ -310,7 +310,7 @@ function updateCapture(e: Event) {
               <input type="radio" value="prefix" v-model="draft.keywordTemplate" />行首匹配
             </label>
             <label style="display: inline-flex; gap: 4px; align-items: center; cursor: pointer">
-              <input type="radio" value="anywhere" v-model="draft.keywordTemplate" />行内任意位置
+              <input type="radio" value="anywhere" v-model="draft.keywordTemplate" />行內任意位置
             </label>
           </div>
           <div
@@ -338,9 +338,9 @@ function updateCapture(e: Event) {
             {{ draftValidation.error }}
           </div>
           <div v-else-if="draftMatchCount !== null" class="muted">
-            在当前文本中命中 <b>{{ draftMatchCount }}</b> 行
+            在目前文本中命中 <b>{{ draftMatchCount }}</b> 行
           </div>
-          <div v-else-if="!rawLines.length" class="muted">加载文件后可预览命中行数</div>
+          <div v-else-if="!rawLines.length" class="muted">載入檔案後可預覽命中行數</div>
 
           <div class="flex" style="gap: 8px; justify-content: flex-end">
             <button type="button" class="ghost-btn" @click="cancelEdit">取消</button>
@@ -350,7 +350,7 @@ function updateCapture(e: Event) {
               :disabled="!draftValidation.ok"
               @click="saveDraft"
             >
-              保存
+              儲存
             </button>
           </div>
         </div>
@@ -363,16 +363,16 @@ function updateCapture(e: Event) {
           class="primary-btn"
           @click="startAdd"
         >
-          + 新增规则
+          + 新增規則
         </button>
-        <button type="button" class="ghost-btn" @click="triggerImport">导入 JSON</button>
+        <button type="button" class="ghost-btn" @click="triggerImport">匯入 JSON</button>
         <button
           type="button"
           class="ghost-btn"
           :disabled="!rules.length"
           @click="handleExport"
         >
-          导出 JSON
+          匯出 JSON
         </button>
         <button
           type="button"
@@ -381,7 +381,7 @@ function updateCapture(e: Event) {
           @click="requestReparse"
           style="margin-left: auto"
         >
-          按当前规则重新解析
+          按目前規則重新解析
         </button>
       </div>
 

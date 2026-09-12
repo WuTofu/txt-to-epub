@@ -16,15 +16,15 @@ function updateField(key: keyof BookMeta, value: string | Language) {
 
 <template>
   <div class="card">
-    <h3 class="section-title">书籍元信息</h3>
+    <h3 class="section-title">書籍元資訊</h3>
     <div class="grid" style="gap: 12px">
       <label class="muted">
-        书名
+        書名
         <input
           class="input"
           type="text"
           :value="meta.title"
-          placeholder="默认使用文件名"
+          placeholder="預設使用檔名"
           @input="updateField('title', ($event.target as HTMLInputElement).value)"
         />
       </label>
@@ -34,18 +34,18 @@ function updateField(key: keyof BookMeta, value: string | Language) {
           class="input"
           type="text"
           :value="meta.author"
-          placeholder="可选"
+          placeholder="選填"
           @input="updateField('author', ($event.target as HTMLInputElement).value)"
         />
       </label>
       <label class="muted">
-        语言
+        語言
         <select
           class="input"
           :value="meta.language"
           @change="updateField('language', ($event.target as HTMLSelectElement).value as Language)"
         >
-          <option value="zh-CN">简体中文</option>
+          <option value="zh-CN">簡體中文</option>
           <option value="en">English</option>
         </select>
       </label>

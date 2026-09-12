@@ -210,7 +210,7 @@ export async function buildEpub(
 
   const oebps = zip.folder("OEBPS");
   if (!oebps) {
-    throw new Error("无法创建 EPUB 结构");
+    throw new Error("無法建立 EPUB 結構");
   }
 
   const manifestItems: ManifestItem[] = chapters.map((chapter, idx) => {

@@ -27,7 +27,7 @@ describe("lines to paragraphs for zh-CN", () => {
     const zip = await JSZip.loadAsync(await blob.arrayBuffer());
     const text = await zip.file("OEBPS/chapter-1.xhtml")?.async("string");
 
-    // 只要能看到三个 <p> 标签，大概率说明并没有把三行合并成一个段落。
+    // Seeing three <p> tags is a good signal the three lines weren't merged into one paragraph.
     const pCount = (text?.match(/<p>/g) || []).length;
     expect(pCount).toBeGreaterThanOrEqual(3);
   });

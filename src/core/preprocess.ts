@@ -2,8 +2,8 @@ export function preprocessLines(text: string): string[] {
   const normalized = text.replace(/\r\n?/g, "\n");
   const lines = normalized
     .split("\n")
-    .map((line) => line.replace(/^[\s\u3000]+/, "")) // 删除行首空白（包含全角空格）
-    .map((line) => line.replace(/\s+$/, "")); // 去掉行尾零碎空格，避免影响比对
+    .map((line) => line.replace(/^[\s\u3000]+/, "")) // strip leading whitespace (including full-width spaces)
+    .map((line) => line.replace(/\s+$/, "")); // trim trailing whitespace so it doesn't interfere with matching
 
   return lines;
 }

@@ -42,21 +42,21 @@ function handleMerge() {
 <template>
   <div class="card">
     <div class="flex-between">
-      <h3 class="section-title">章节详情</h3>
+      <h3 class="section-title">章節詳情</h3>
       <span v-if="chapter" class="pill">{{ chapter.lines.join("").length }} 字</span>
     </div>
 
     <div v-if="chapter" class="grid" style="gap: 12px">
-      <label class="muted">章节标题</label>
+      <label class="muted">章節標題</label>
       <div class="flex" style="align-items: center">
-        <input v-model="titleInput" class="input" type="text" placeholder="章节标题" />
-        <button class="ghost-btn" :disabled="busy" @click="handleRename">保存标题</button>
-        <button class="ghost-btn" :disabled="busy || !canMerge" @click="handleMerge">与上一章合并</button>
+        <input v-model="titleInput" class="input" type="text" placeholder="章節標題" />
+        <button class="ghost-btn" :disabled="busy" @click="handleRename">儲存標題</button>
+        <button class="ghost-btn" :disabled="busy || !canMerge" @click="handleMerge">與上一章合併</button>
       </div>
 
-      <label class="muted">正文预览（前 120 行）</label>
+      <label class="muted">正文預覽（前 120 行）</label>
       <textarea class="textarea" :value="preview" readonly></textarea>
     </div>
-    <div v-else class="muted">请选择章节以查看详情。</div>
+    <div v-else class="muted">請選擇章節以查看詳情。</div>
   </div>
 </template>

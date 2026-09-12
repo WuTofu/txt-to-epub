@@ -40,7 +40,7 @@ export function keywordToRegexSource(
     .filter((t) => t.length > 0);
 
   if (tokens.length === 0) {
-    throw new Error("关键词不能为空");
+    throw new Error("關鍵字不能為空");
   }
 
   const escaped = tokens.map(escapeRegex);
@@ -65,12 +65,12 @@ export type ValidationResult = { ok: true } | { ok: false; error: string };
 
 export function validateRule(rule: ChapterRule): ValidationResult {
   if (!rule.name || !rule.name.trim()) {
-    return { ok: false, error: "名称不能为空" };
+    return { ok: false, error: "名稱不能為空" };
   }
   if (!rule.pattern || !rule.pattern.trim()) {
     return {
       ok: false,
-      error: rule.mode === "keyword" ? "关键词不能为空" : "正则不能为空",
+      error: rule.mode === "keyword" ? "關鍵字不能為空" : "正則不能為空",
     };
   }
   try {
@@ -112,7 +112,7 @@ export function serializeRules(rules: ChapterRule[]): string {
 export function parseImportedRules(json: string): ChapterRule[] {
   const data = JSON.parse(json);
   if (!Array.isArray(data)) {
-    throw new Error("JSON 根节点必须为数组");
+    throw new Error("JSON 根節點必須為陣列");
   }
   const out: ChapterRule[] = [];
   for (const raw of data) {
