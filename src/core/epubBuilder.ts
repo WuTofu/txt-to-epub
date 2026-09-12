@@ -228,7 +228,7 @@ export async function buildEpub(
     coverImageInfo = { href: coverHref, mediaType: options.cover.mimeType || "image/jpeg" };
     coverPageHref = "cover.xhtml";
 
-    oebps.file(coverHref, options.cover.data);
+    oebps.file(coverHref, options.cover.data, { compression: "STORE" });
     oebps.file(coverPageHref, buildCoverXhtml(meta, coverHref));
   }
 
@@ -242,5 +242,10 @@ export async function buildEpub(
     }),
   );
 
-  return zip.generateAsync({ type: "blob", mimeType: "application/epub+zip" });
+  return zip.generateAsync({
+    type: "blob",
+    mimeType: "application/epub+zip",
+    compression: "DEFLATE",
+    compressionOptions: { level: 9 },
+  });
 }
