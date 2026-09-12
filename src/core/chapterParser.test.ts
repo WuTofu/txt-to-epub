@@ -11,11 +11,16 @@ describe("parseChapters", () => {
   const lang: Language = "zh-CN";
 
   it("falls back to single chapter when no titles detected", () => {
-    const lines = ["这是第一行", "这是第二行"]; 
+    const lines = ["这是第一行", "这是第二行"];
     const chapters = parseChapters(lines, lang);
     expect(chapters).toHaveLength(1);
     expect(chapters[0].title).toBe("正文");
     expect(chapters[0].lines).toEqual(lines);
+  });
+
+  it("uses Traditional Chinese fallback titles for zh-TW", () => {
+    const chapters = parseChapters(["序章", "内容", "第1章 开始", "正文"], "zh-TW");
+    expect(chapters[0].title).toBe("簡介");
   });
 
   it("detects numeric chinese chapter titles and splits correctly", () => {

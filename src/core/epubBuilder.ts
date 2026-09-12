@@ -1,11 +1,17 @@
 import JSZip from "jszip";
-import type { BookMeta, Chapter, Cover } from "../types";
+import type { BookMeta, Chapter, Cover, Language } from "../types";
 
 interface ManifestItem {
   id: string;
   href: string;
   title: string;
 }
+
+const uiLabels: Record<Language, { cover: string; contents: string }> = {
+  "zh-CN": { cover: "封面", contents: "目录" },
+  "zh-TW": { cover: "封面", contents: "目錄" },
+  en: { cover: "Cover", contents: "Contents" },
+};
 
 interface BuildEpubOptions {
   cover?: Cover | null;
@@ -89,7 +95,7 @@ ${paragraphs}
 
 function buildCoverXhtml(meta: BookMeta, coverHref: string): string {
   const title = escapeXml(meta.title || "未命名");
-  const label = meta.language === "zh-CN" ? "封面" : "Cover";
+  const label = uiLabels[meta.language].cover;
 
   return `<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
@@ -127,7 +133,7 @@ function buildNavXhtml(meta: BookMeta, items: ManifestItem[]): string {
   </head>
   <body>
     <nav epub:type="toc" id="toc">
-      <h1>${meta.language === "zh-CN" ? "目录" : "Contents"}</h1>
+      <h1>${uiLabels[meta.language].contents}</h1>
       <ol>
 ${list}
       </ol>

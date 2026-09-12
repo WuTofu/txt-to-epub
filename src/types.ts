@@ -1,4 +1,4 @@
-export type Language = "zh-CN" | "en";
+export type Language = "zh-CN" | "zh-TW" | "en";
 
 export interface BookMeta {
   title: string;

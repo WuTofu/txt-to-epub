@@ -45,6 +45,7 @@ function updateField(key: keyof BookMeta, value: string | Language) {
           :value="meta.language"
           @change="updateField('language', ($event.target as HTMLSelectElement).value as Language)"
         >
+          <option value="zh-TW">正體中文</option>
           <option value="zh-CN">簡體中文</option>
           <option value="en">English</option>
         </select>

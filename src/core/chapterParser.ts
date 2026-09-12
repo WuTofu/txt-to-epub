@@ -2,6 +2,12 @@ import type { Chapter, Language } from "../types";
 import { hasMeaningfulContent } from "./preprocess";
 import { compileRule, type ChapterRule, type CompiledRule } from "./customRules";
 
+const fallbackTitles: Record<Language, { content: string; intro: string }> = {
+  "zh-CN": { content: "正文", intro: "简介" },
+  "zh-TW": { content: "正文", intro: "簡介" },
+  en: { content: "Content", intro: "Introduction" },
+};
+
 const presetPatterns: CompiledRule[] = [
   {
     // Chinese "Chapter X" (第X章)
@@ -71,7 +77,7 @@ export function parseChapters(
   const chapters: Chapter[] = [];
 
   if (indices.length === 0) {
-    const title = language === "zh-CN" ? "正文" : "Content";
+    const title = fallbackTitles[language].content;
     chapters.push({
       id: createId("chapter", 0),
       title,
@@ -84,7 +90,7 @@ export function parseChapters(
   // intro chapter
   const introLines = lines.slice(0, indices[0].index);
   if (hasMeaningfulContent(introLines)) {
-    const title = language === "zh-CN" ? "简介" : "Introduction";
+    const title = fallbackTitles[language].intro;
     chapters.push({
       id: createId("intro", 0),
       title,
