@@ -4,7 +4,7 @@
 
 A pure frontend TXT-to-EPUB converter built with Vue 3, TypeScript, and Vite. It supports both Simplified Chinese and English text, automatically detects chapters and generates an EPUB with a table of contents. Everything runs in your browser and no file is uploaded, which helps protect user privacy.
 
-Live demo: https://txt2epub.bluice.xyz/
+Live demo: https://wutofu.github.io/txt-to-epub/
 
 ## Features
 

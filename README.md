@@ -4,7 +4,7 @@
 
 一個純前端的 TXT 小說轉 EPUB 小工具。支援繁體中文、簡體中文與英文文本，自動識別章節並產生含目錄的 EPUB 檔案，全部處理都在瀏覽器本機完成，不上傳檔案，保護使用者隱私。
 
-線上體驗網址：https://txt2epub.bluice.xyz/
+線上體驗網址：https://wutofu.github.io/txt-to-epub/
 
 ## 功能特色
 
