@@ -199,19 +199,11 @@ onBeforeUnmount(() => {
       <div class="flex" style="flex-wrap: wrap; justify-content: flex-end">
         <a
           class="ghost-btn"
-          href="https://github.com/bluicezhen/txt-to-epub"
+          href="https://github.com/WuTofu/txt-to-epub"
           target="_blank"
           rel="noopener noreferrer"
         >
-          GitHub · Star
-        </a>
-        <a
-          class="ghost-btn"
-          href="https://blog.bluice.xyz/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Blog
+          GitHub
         </a>
       </div>
     </header>
