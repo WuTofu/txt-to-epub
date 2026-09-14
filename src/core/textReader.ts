@@ -62,7 +62,7 @@ export async function readTextFile(
 ): Promise<ReadResult> {
   const rawBuffer = new Uint8Array(await file.arrayBuffer());
   const binaryString = bufferToLatin1String(rawBuffer);
-  const detection = jschardet.detect(binaryString) ?? {};
+  const detection: { encoding?: string } = jschardet.detect(binaryString) ?? {};
   const detectedEncoding = normalizeEncoding(detection.encoding);
   const targetEncoding = encodingChoice === "auto" ? detectedEncoding : normalizeEncoding(encodingChoice);
   const decoded = decodeBuffer(rawBuffer, targetEncoding);
