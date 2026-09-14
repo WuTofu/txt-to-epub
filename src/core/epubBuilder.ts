@@ -71,6 +71,34 @@ function linesToParagraphs(lines: string[]): string[] {
   return paragraphs;
 }
 
+// Same chapter-number vocabulary as the presetPatterns in chapterParser.ts,
+// used here to split a title into "第17章" + "能源與物資" for the badge style.
+const chapterTitlePatterns: RegExp[] = [
+  /^(第[0-9０-９零一二三四五六七八九十百千万两〇○]+[章回节卷])[\s·、，,：:.-]*(.*)$/,
+  /^(Chapter\s*[0-9０-９]+)[\s·，,：:.-]*(.*)$/i,
+];
+
+function splitChapterTitle(title: string): { sequence: string; name: string } | null {
+  for (const pattern of chapterTitlePatterns) {
+    const matched = title.match(pattern);
+    if (matched) {
+      const name = matched[2].trim();
+      if (name) {
+        return { sequence: matched[1].trim(), name };
+      }
+    }
+  }
+  return null;
+}
+
+function buildChapterHeading(chapter: Chapter): string {
+  const split = splitChapterTitle(chapter.title);
+  if (split) {
+    return `<h2 class="head"><span class="chapter-sequence-number">${escapeXml(split.sequence)}</span><br />${escapeXml(split.name)}</h2>`;
+  }
+  return `<h2 class="head">${escapeXml(chapter.title)}</h2>`;
+}
+
 function buildChapterXhtml(chapter: Chapter, language: string, index: number): string {
   const paragraphs = linesToParagraphs(chapter.lines)
     .map((p) => `      <p>${escapeXml(p)}</p>`)
@@ -82,10 +110,11 @@ function buildChapterXhtml(chapter: Chapter, language: string, index: number): s
   <head>
     <meta charset="utf-8" />
     <title>${escapeXml(chapter.title)}</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
     <section id="chap-${index}">
-      <h1>${escapeXml(chapter.title)}</h1>
+      ${buildChapterHeading(chapter)}
 ${paragraphs}
     </section>
   </body>
@@ -151,6 +180,7 @@ function buildContentOpf(
 ): string {
   const manifestEntries: string[] = [
     `    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>`,
+    `    <item id="style" href="style.css" media-type="text/css"/>`,
   ];
 
   if (extras?.coverImage) {
@@ -197,6 +227,25 @@ ${spineEntries.join("\n")}
 `;
 }
 
+const mainCss = `@charset "utf-8";
+h2.head {
+    text-align: left;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin: 1em 2em 2em 0;
+    color: #3f83e8;
+    line-height: 140%;
+}
+
+h2.head span.chapter-sequence-number {
+    font-size: 0.7em;
+    background-color: #3f83e8;
+    border-radius: 9px;
+    padding: 4px;
+    color: #fff;
+}
+`;
+
 const containerXml = `<?xml version="1.0"?>
 <container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
   <rootfiles>
@@ -218,6 +267,8 @@ export async function buildEpub(
   if (!oebps) {
     throw new Error("無法建立 EPUB 結構");
   }
+
+  oebps.file("style.css", mainCss);
 
   const manifestItems: ManifestItem[] = chapters.map((chapter, idx) => {
     const href = `chapter-${idx + 1}.xhtml`;

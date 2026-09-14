@@ -33,6 +33,49 @@ describe("lines to paragraphs for zh-CN", () => {
   });
 });
 
+describe("chapter heading style", () => {
+  const meta: BookMeta = {
+    title: "测试小说",
+    author: "测试作者",
+    language: "zh-CN",
+  };
+
+  it("splits a numbered title into a sequence badge and the chapter name", async () => {
+    const chapter: Chapter = { id: "ch1", title: "第1章 测试", lines: ["内容"] };
+
+    const blob = await buildEpub(meta, [chapter]);
+    const zip = await JSZip.loadAsync(await blob.arrayBuffer());
+    const text = await zip.file("OEBPS/chapter-1.xhtml")?.async("string");
+
+    expect(text).toContain(
+      '<span class="chapter-sequence-number">第1章</span><br />测试',
+    );
+  });
+
+  it("renders a plain heading when the title has no chapter number", async () => {
+    const chapter: Chapter = { id: "ch1", title: "前言", lines: ["内容"] };
+
+    const blob = await buildEpub(meta, [chapter]);
+    const zip = await JSZip.loadAsync(await blob.arrayBuffer());
+    const text = await zip.file("OEBPS/chapter-1.xhtml")?.async("string");
+
+    expect(text).toContain('<h2 class="head">前言</h2>');
+    expect(text).not.toContain("chapter-sequence-number");
+  });
+
+  it("includes a style.css registered in the manifest", async () => {
+    const chapter: Chapter = { id: "ch1", title: "第1章 测试", lines: ["内容"] };
+
+    const blob = await buildEpub(meta, [chapter]);
+    const zip = await JSZip.loadAsync(await blob.arrayBuffer());
+    const css = await zip.file("OEBPS/style.css")?.async("string");
+    const opf = await zip.file("OEBPS/content.opf")?.async("string");
+
+    expect(css).toContain("h2.head");
+    expect(opf).toContain('<item id="style" href="style.css" media-type="text/css"/>');
+  });
+});
+
 describe("epub compression", () => {
   it("compresses repetitive chapter text instead of storing it raw", async () => {
     const line = "　　這是一行會被反覆重複的測試文本，用來驗證壓縮效果是否生效。";
