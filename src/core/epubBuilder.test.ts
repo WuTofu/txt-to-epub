@@ -52,6 +52,19 @@ describe("chapter heading style", () => {
     );
   });
 
+  it("renders just the sequence badge when the title has no chapter name", async () => {
+    const chapter: Chapter = { id: "ch1", title: "第一章", lines: ["内容"] };
+
+    const blob = await buildEpub(meta, [chapter]);
+    const zip = await JSZip.loadAsync(await blob.arrayBuffer());
+    const text = await zip.file("OEBPS/chapter-1.xhtml")?.async("string");
+
+    expect(text).toContain(
+      '<h2 class="head"><span class="chapter-sequence-number">第一章</span></h2>',
+    );
+    expect(text).not.toContain("<br />");
+  });
+
   it("renders a plain heading when the title has no chapter number", async () => {
     const chapter: Chapter = { id: "ch1", title: "前言", lines: ["内容"] };
 

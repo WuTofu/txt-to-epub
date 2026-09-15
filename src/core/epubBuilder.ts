@@ -82,10 +82,7 @@ function splitChapterTitle(title: string): { sequence: string; name: string } | 
   for (const pattern of chapterTitlePatterns) {
     const matched = title.match(pattern);
     if (matched) {
-      const name = matched[2].trim();
-      if (name) {
-        return { sequence: matched[1].trim(), name };
-      }
+      return { sequence: matched[1].trim(), name: matched[2].trim() };
     }
   }
   return null;
@@ -94,7 +91,11 @@ function splitChapterTitle(title: string): { sequence: string; name: string } | 
 function buildChapterHeading(chapter: Chapter): string {
   const split = splitChapterTitle(chapter.title);
   if (split) {
-    return `<h2 class="head"><span class="chapter-sequence-number">${escapeXml(split.sequence)}</span><br />${escapeXml(split.name)}</h2>`;
+    const badge = `<span class="chapter-sequence-number">${escapeXml(split.sequence)}</span>`;
+    if (!split.name) {
+      return `<h2 class="head">${badge}</h2>`;
+    }
+    return `<h2 class="head">${badge}<br />${escapeXml(split.name)}</h2>`;
   }
   return `<h2 class="head">${escapeXml(chapter.title)}</h2>`;
 }
